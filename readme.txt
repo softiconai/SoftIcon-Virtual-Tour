@@ -24,6 +24,10 @@ A 360° panorama and virtual tour block. Add scenes and hotspots right in the bl
 
 The plugin sets no cookies, stores nothing about visitors and connects to no outside service. Your scenes are saved in the block, inside your post.
 
+= Third-party libraries =
+
+* Pannellum 2.5.7 (npm package pannellum) by Matthew Petroff – [pannellum.org](https://pannellum.org/) / [github.com/mpetroff/pannellum](https://github.com/mpetroff/pannellum) – MIT License. Bundled in build/pannellum.js and build/style-index.css; license in build/pannellum-LICENSE.txt. The build keeps it to the block, so it never changes another plugin's copy of Pannellum (loaders/pannellum.js).
+
 == Installation ==
 
 1. Install the plugin from **Plugins → Add New**, or upload the zip, and activate it.

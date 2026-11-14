@@ -134,8 +134,26 @@ class Block {
 		return array_values( $scenes );
 	}
 
+	// the original's width and WordPress's smaller copy, for devices that cannot show the original
+	public static function sizes( $scene ) {
+		$meta = $scene['imageId'] ? wp_get_attachment_metadata( $scene['imageId'] ) : false;
+		$file = wp_basename( (string) wp_parse_url( $scene['imageUrl'], PHP_URL_PATH ) );
+		if ( ! is_array( $meta ) || empty( $meta['file'] ) ) {
+			return $scene;
+		}
+		if ( empty( $meta['original_image'] ) ) {
+			$scene['width'] = wp_basename( $meta['file'] ) === $file && isset( $meta['width'] ) ? absint( $meta['width'] ) : 0;
+		} elseif ( $meta['original_image'] === $file ) {
+			$path           = (string) wp_get_original_image_path( $scene['imageId'] );
+			$size           = $path && file_exists( $path ) ? wp_getimagesize( $path ) : false;
+			$scene['width'] = $size ? absint( $size[0] ) : 0;
+			$scene['small'] = (string) wp_get_attachment_url( $scene['imageId'] );
+		}
+		return $scene;
+	}
+
 	// read by view.js
 	public static function config( $attributes, $scenes = array() ) {
-		return apply_filters( 'alvt_config', array( 'scenes' => $scenes ), $attributes );
+		return apply_filters( 'alvt_config', array( 'scenes' => array_map( array( __CLASS__, 'sizes' ), $scenes ) ), $attributes );
 	}
 }

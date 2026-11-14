@@ -1,0 +1,198 @@
+# Copyright (C) 2026 softiconai
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: SoftIcon Virtual Tour 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/softicon-virtual-tour\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-14T13:26:05+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: softicon-virtual-tour\n"
+
+#. Plugin Name of the plugin
+#: softicon-virtual-tour.php
+msgid "SoftIcon Virtual Tour"
+msgstr ""
+
+#. Description of the plugin
+#: softicon-virtual-tour.php
+msgid "A 360° panorama and virtual tour block. Add scenes and hotspots right in the block editor. No external services."
+msgstr ""
+
+#. Author of the plugin
+#: softicon-virtual-tour.php
+msgid "softiconai"
+msgstr ""
+
+#. Author URI of the plugin
+#: softicon-virtual-tour.php
+msgid "https://profiles.wordpress.org/softiconai/"
+msgstr ""
+
+#. translators: %d: the scene's number in the tour
+#: build/render.php:42
+#: build/index.js:6
+#: build/index.js:13
+#: build/view.js:7
+#, php-format,js-format
+msgid "Scene %d"
+msgstr ""
+
+#: build/index.js:1
+msgid "(opens in a new tab)"
+msgstr ""
+
+#: build/index.js:1
+msgid "Get support"
+msgstr ""
+
+#: build/index.js:1
+msgid "Rate Virtual Tour"
+msgstr ""
+
+#: build/index.js:1
+msgid "More plugins"
+msgstr ""
+
+#: build/index.js:1
+msgid "Help"
+msgstr ""
+
+#: build/index.js:1
+msgid "Email:"
+msgstr ""
+
+#: build/index.js:1
+msgid "Scenes"
+msgstr ""
+
+#. translators: %d: number of scenes
+#: build/index.js:4
+#, js-format
+msgid "%d scene."
+msgid_plural "%d scenes."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:6
+msgid "Add scenes"
+msgstr ""
+
+#. translators: %d: the most scenes a tour can have
+#: build/index.js:8
+#, js-format
+msgid "A tour can have up to %d scenes."
+msgstr ""
+
+#. translators: %s: the image's title or file name
+#: build/index.js:11
+#, js-format
+msgid "“%s” is not a 360° panorama: its width should be twice its height (2:1). It may look stretched."
+msgstr ""
+
+#: build/index.js:11
+msgid "Virtual Tour"
+msgstr ""
+
+#: build/index.js:11
+msgid "Choose or upload your 360° panorama images (2:1, for example 6000 × 3000). Each image becomes a scene of the tour."
+msgstr ""
+
+#: build/view.js:1
+msgid "Close"
+msgstr ""
+
+#: build/view.js:1
+#: build/view.js:7
+msgid "This browser cannot show the 360° view."
+msgstr ""
+
+#. translators: %s: the scene's name
+#: build/view.js:3
+#, js-format
+msgid "360° view: %s. Use the arrow keys to look around and + or - to zoom."
+msgstr ""
+
+#. translators: %s: the scene's name
+#: build/view.js:5
+#, js-format
+msgid "Go to %s"
+msgstr ""
+
+#: build/view.js:7
+msgid "Click to load panorama"
+msgstr ""
+
+#: build/view.js:7
+msgid "Loading…"
+msgstr ""
+
+#: build/view.js:7
+msgid "No panorama image was given."
+msgstr ""
+
+#: build/view.js:7
+msgid "The panorama image could not be loaded."
+msgstr ""
+
+#: build/view.js:7
+msgid "The address of the panorama image is not right."
+msgstr ""
+
+#: build/view.js:7
+msgid "This panorama is too big for this device."
+msgstr ""
+
+#: build/view.js:7
+msgid "The panorama could not be shown."
+msgstr ""
+
+#: build/block.json
+msgctxt "block title"
+msgid "Virtual Tour"
+msgstr ""
+
+#: build/block.json
+msgctxt "block description"
+msgid "A 360° panorama or a virtual tour of several scenes, with hotspots. Built right in the block editor."
+msgstr ""
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "virtual tour"
+msgstr ""
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "360"
+msgstr ""
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "panorama"
+msgstr ""
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "vr"
+msgstr ""
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "360 photo"
+msgstr ""
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "equirectangular"
+msgstr ""
+
+#: build/block.json
+msgctxt "block keyword"
+msgid "real estate"
+msgstr ""

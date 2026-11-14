@@ -89,22 +89,25 @@ export const cleanScene = ( raw, index ) => {
 	return scene.imageUrl ? scene : null;
 };
 
-// each id once, hotspots that lead somewhere
-export const cleanScenes = ( list ) => {
+// each id once, hotspots that lead somewhere; the editor (keep) also shows the unfinished ones, marked empty
+export const cleanScenes = ( list, keep = false ) => {
 	const scenes = new Map();
 	( Array.isArray( list ) ? list.slice( 0, maxScenes ) : [] ).map( cleanScene ).filter( Boolean ).forEach( ( scene ) => {
 		if ( ! scenes.has( scene.id ) ) {
 			scenes.set( scene.id, scene );
 		}
 	} );
+	const leads = ( spot, scene ) => {
+		if ( 'scene' === spot.type ) {
+			return spot.target !== scene.id && scenes.has( spot.target );
+		}
+		return 'link' === spot.type ? !! spot.url : !! ( spot.title + spot.text + spot.imageUrl );
+	};
 	return [ ...scenes.values() ].map( ( scene ) => ( {
 		...scene,
-		hotspots: scene.hotspots.filter( ( spot ) => {
-			if ( 'scene' === spot.type ) {
-				return spot.target !== scene.id && scenes.has( spot.target );
-			}
-			return 'link' === spot.type ? !! spot.url : !! ( spot.title + spot.text + spot.imageUrl );
-		} ),
+		hotspots: keep
+			? scene.hotspots.map( ( spot ) => ( leads( spot, scene ) ? spot : { ...spot, empty: true } ) )
+			: scene.hotspots.filter( ( spot ) => leads( spot, scene ) ),
 	} ) );
 };
 

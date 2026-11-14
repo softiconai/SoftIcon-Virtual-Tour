@@ -13,15 +13,23 @@ const rules = defaultConfig.module.rules.map(rule => (Array.isArray(rule.use) ? 
 		: use))
 } : rule));
 
-// the viewer libraries (chosen in step 4a): each one its own lazy chunk under its own name, with its license
-// { name: 'three', test: /[\\/]node_modules[\\/]three[\\/]/, license: 'node_modules/three/LICENSE' }
-const LIBRARIES = [];
+// the viewer libraries: each one its own lazy chunk under its own name (readme.txt names them), with its license
+const LIBRARIES = [
+	{ name: 'pannellum', test: /[\\/]node_modules[\\/]pannellum[\\/]build[\\/]pannellum\.js$/, license: 'node_modules/pannellum/COPYING' }
+];
 
 const patterns = LIBRARIES.filter(lib => lib.license).map(lib => ({ from: lib.license, to: `${lib.name}-LICENSE.txt` }));
 
 module.exports = {
 	...defaultConfig,
-	module: { ...defaultConfig.module, rules },
+	module: {
+		...defaultConfig.module,
+		rules: [
+			...rules,
+			// Pannellum without its two globals, so it never meets another plugin's copy (loaders/pannellum.js)
+			{ test: LIBRARIES[0].test, use: [{ loader: require.resolve('./loaders/pannellum.js') }] }
+		]
+	},
 	// the lazy chunks get a version, so a browser never mixes a cached old chunk with a new view.js
 	output: { ...defaultConfig.output, chunkFilename: '[name].js?ver=[contenthash:8]' },
 	optimization: {

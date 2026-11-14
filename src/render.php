@@ -33,6 +33,7 @@ $alvt_img = $alvt_first['imageId'] ? wp_get_attachment_image( $alvt_first['image
 		<?php else : ?>
 			<img class="alvt_image" src="<?php echo esc_url( $alvt_first['imageUrl'] ); ?>" alt="<?php echo esc_attr( $alvt_first['alt'] ); ?>" loading="lazy" decoding="async">
 		<?php endif; ?>
+		<div class="alvt_viewer"></div>
 	</div>
 	<?php if ( count( $alvt_scenes ) > 1 ) : ?>
 		<ul class="alvt_scenes">
