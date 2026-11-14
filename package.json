@@ -1,0 +1,27 @@
+{
+	"name": "softicon-virtual-tour",
+	"version": "1.0.0",
+	"description": "360° panorama and virtual tour block for WordPress: scenes and hotspots built in the block editor",
+	"main": "build/index.js",
+	"scripts": {
+		"lint": "eslint src",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"format": "wp-scripts format",
+		"tools": "[ -d ../softicon-tools ] && node ../softicon-tools/sync.js src/vendor/softicon-tools softicon-virtual-tour || true",
+		"prestart": "npm run -s tools",
+		"prebuild": "npm run -s tools",
+		"start": "wp-scripts start --webpack-copy-php",
+		"build": "wp-scripts build --webpack-copy-php",
+		"i18n-pot": "wp i18n make-pot . languages/softicon-virtual-tour.pot --exclude=\"src,node_modules\"",
+		"find-ds": "find . -name '.DS_Store' -not -path './node_modules/*' -delete",
+		"prezip": "[ -d node_modules ] || npm ci --no-audit --no-fund",
+		"zip": "rm -f softicon-virtual-tour.zip && printf '→ Building block\\n' && (npm run -s build >/dev/null 2>&1 || npm run build) && printf '→ Translations\\n' && (npm run -s i18n-pot >/dev/null 2>&1 || npm run i18n-pot) && npm run -s find-ds && printf '→ Zipping\\n' && cd .. && zip -rq softicon-virtual-tour/softicon-virtual-tour.zip softicon-virtual-tour/softicon-virtual-tour.php softicon-virtual-tour/index.php softicon-virtual-tour/includes softicon-virtual-tour/src softicon-virtual-tour/build softicon-virtual-tour/languages softicon-virtual-tour/readme.txt softicon-virtual-tour/package.json softicon-virtual-tour/webpack.config.js -x '*/.DS_Store' '*.map' 'softicon-virtual-tour/src/render.php'",
+		"postzip": "printf '\\n✔ Zip ready: %s\\n  %s files, %s\\n\\n' \"$PWD/softicon-virtual-tour.zip\" \"$(unzip -l softicon-virtual-tour.zip | tail -1 | awk '{print $2}')\" \"$(du -h softicon-virtual-tour.zip | cut -f1 | tr -d ' ')\"",
+		"bundle": "npm run lint && npm run zip"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^27.9.0",
+		"copy-webpack-plugin": "^10.2.4"
+	}
+}

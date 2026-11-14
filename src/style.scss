@@ -1,0 +1,60 @@
+// where the build folder is, for src/public-path.js when a JS combine
+// plugin moved view.js; WordPress makes this url absolute when it prints
+// the CSS inline
+:root {
+	// a name in the folder, never loaded (the minifier would turn ./ into /;
+	// webpack.config.js tells css-loader not to look for the file)
+	--alvt-build: url(./alvt);
+}
+
+// logical properties keep the layout right for RTL languages without an -rtl.css copy
+.alvt_tour {
+	box-sizing: border-box;
+	overflow: hidden;
+	border-radius: 12px;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	[hidden] {
+		display: none !important;
+	}
+}
+
+// the first scene as a picture (render.php) until the viewer takes its place
+.alvt_stage {
+	position: relative;
+	isolation: isolate;
+	height: min(var(--alvt-height, 480px), 80vh);
+	background: #111;
+}
+
+.alvt_image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	margin: 0;
+	object-fit: cover;
+}
+
+// the scene names, for visitors without JavaScript and for search engines
+.alvt_scenes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin: 0;
+	padding: 10px 0 0;
+	list-style: none;
+	font-size: 0.875em;
+}
+
+.alvt_scene {
+	margin: 0;
+	padding: 4px 12px;
+	border-radius: 999px;
+	background: rgba(127, 127, 127, 0.14);
+}

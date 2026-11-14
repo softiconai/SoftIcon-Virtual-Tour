@@ -1,0 +1,30 @@
+// block settings panels shared by SoftIcon blocks
+// (copied from ../softicon-tools by npm run tools)
+@import "./vendor/softicon-tools/styles/panels";
+
+.alvtHelp {
+	margin: 0;
+	color: #757575;
+	font-size: 12px;
+}
+
+// the scene list in the sidebar
+.alvtScenes {
+	margin: 0;
+	padding: 0;
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	list-style: none;
+}
+
+.alvtSceneRow {
+	overflow: hidden;
+	margin: 0;
+	padding: 8px 10px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+	& + & {
+		border-top: 1px solid #f0f0f0;
+	}
+}

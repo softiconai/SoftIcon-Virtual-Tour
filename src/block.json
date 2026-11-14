@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "softicon/virtual-tour",
+	"version": "1.0.0",
+	"title": "Virtual Tour",
+	"category": "media",
+	"description": "A 360° panorama or a virtual tour of several scenes, with hotspots. Built right in the block editor.",
+	"keywords": [ "virtual tour", "360", "panorama", "vr", "360 photo", "equirectangular", "real estate" ],
+	"textdomain": "softicon-virtual-tour",
+	"attributes": {
+		"scenes": { "type": "array", "default": [] }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}
