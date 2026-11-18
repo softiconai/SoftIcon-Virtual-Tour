@@ -1,15 +1,26 @@
 import './public-path';
 import { text } from './viewer/messages';
+import { cleanScenes, link } from './utils/scene';
 
 const SELECTOR = '.alvt_tour';
 
 // Pannellum and the tour code: their own chunks, loaded only for a tour near the screen
 const loadTour = () => import( /* webpackChunkName: "tour" */ './viewer/Tour' );
 
+// The scenes are cleaned again here, as Block::scenes() does: post content can also hold a hand-written
+// .alvt_tour element (a Custom HTML block) that render.php never saw, with a javascript: link in it.
 const configOf = ( el ) => {
 	try {
 		const config = JSON.parse( el.dataset.alvt || '{}' );
-		return config && 'object' === typeof config && Array.isArray( config.scenes ) ? config : null;
+		if ( ! config || 'object' !== typeof config || ! Array.isArray( config.scenes ) ) {
+			return null;
+		}
+		const sizes = new Map( config.scenes.map( ( scene ) => [ scene?.id, scene ] ) );
+		const scenes = cleanScenes( config.scenes, !! config.editor ).map( ( scene ) => {
+			const raw = sizes.get( scene.id ) || {};
+			return { ...scene, small: link( raw.small ), width: Math.max( 0, Number( raw.width ) || 0 ) };
+		} );
+		return { ...config, scenes };
 	} catch ( e ) {
 		return null;
 	}

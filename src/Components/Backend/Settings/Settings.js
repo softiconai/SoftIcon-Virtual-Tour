@@ -4,6 +4,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { HelpCards, Panel, PanelGroup } from '../../../vendor/softicon-tools/components/Panels';
 import { helpCards } from '../../../utils/options';
 import SceneList from '../Scenes/SceneList';
+import SizePanel from './Size';
 
 // the help cards, last in the sidebar
 const Help = () => <Panel id="help" title={ __( 'Help', 'softicon-virtual-tour' ) }>
@@ -27,6 +28,7 @@ const Settings = ( props ) => {
 		<div className="siSettings">
 			<PanelGroup initial="scenes">
 				<ScenesPanel { ...props } />
+				<SizePanel { ...{ attributes, setAttributes } } />
 
 				{ /* Add-ons append their own panels. */ }
 				{ applyFilters( 'alvt.block.inspector', null, { tab: 'general', attributes, setAttributes, scenes } ) }

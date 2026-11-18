@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-14T13:26:05+00:00\n"
+"POT-Creation-Date: 2026-11-18T12:02:07+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: softicon-virtual-tour\n"
@@ -35,12 +35,17 @@ msgid "https://profiles.wordpress.org/softiconai/"
 msgstr ""
 
 #. translators: %d: the scene's number in the tour
-#: build/render.php:42
-#: build/index.js:6
-#: build/index.js:13
+#: build/render.php:43
+#: build/index.js:18
+#: build/index.js:38
 #: build/view.js:7
 #, php-format,js-format
 msgid "Scene %d"
+msgstr ""
+
+#: build/index.js:1
+#: build/index.js:15
+msgid "Reset"
 msgstr ""
 
 #: build/index.js:1
@@ -60,46 +65,307 @@ msgid "More plugins"
 msgstr ""
 
 #: build/index.js:1
+msgid "Add a title, text or image."
+msgstr ""
+
+#: build/index.js:1
+msgid "Add the address the hotspot opens."
+msgstr ""
+
+#: build/index.js:1
+msgid "Choose the scene this hotspot leads to."
+msgstr ""
+
+#: build/index.js:1
+msgid "Add another scene first: this hotspot takes visitors there."
+msgstr ""
+
+#: build/index.js:1
+msgid "Leads to"
+msgstr ""
+
+#: build/index.js:1
+msgid "Choose a scene"
+msgstr ""
+
+#. translators: %s: the scene's name
+#: build/index.js:4
+#, js-format
+msgid "Back to %s"
+msgstr ""
+
+#: build/index.js:4
+#: build/index.js:9
+#: build/view.js:1
+msgid "Hotspot"
+msgstr ""
+
+#: build/index.js:4
+msgid "Go to scene"
+msgstr ""
+
+#. translators: %s: a scene's name
+#: build/index.js:4
+#: build/index.js:9
+msgid "Info"
+msgstr ""
+
+#: build/index.js:4
+msgid "Link"
+msgstr ""
+
+#: build/index.js:4
+msgid "Not shown on the page yet."
+msgstr ""
+
+#: build/index.js:4
+msgid "Title"
+msgstr ""
+
+#: build/index.js:4
+msgid "Shown when the hotspot is pointed at. Empty: \"Go to\" and the scene's name."
+msgstr ""
+
+#: build/index.js:4
+msgid "Shown when the hotspot is pointed at."
+msgstr ""
+
+#: build/index.js:4
+msgid "Text"
+msgstr ""
+
+#: build/index.js:4
+msgid "Opens in a small box. Plain text, up to 500 characters."
+msgstr ""
+
+#: build/index.js:4
+msgid "Image"
+msgstr ""
+
+#: build/index.js:4
+#: build/index.js:12
+msgid "Replace image"
+msgstr ""
+
+#: build/index.js:4
+msgid "Choose image"
+msgstr ""
+
+#: build/index.js:4
+msgid "Remove image"
+msgstr ""
+
+#: build/index.js:4
+msgid "Address"
+msgstr ""
+
+#: build/index.js:4
+msgid "This is not a web address (http or https)."
+msgstr ""
+
+#: build/index.js:4
+msgid "Opens in the same tab."
+msgstr ""
+
+#: build/index.js:4
+msgid "Place"
+msgstr ""
+
+#. translators: 1: the direction in degrees, 2: up or down in degrees
+#: build/index.js:7
+#, js-format
+msgid "Direction %1$s°, up/down %2$s°"
+msgstr ""
+
+#: build/index.js:7
+msgid "Move to the center of the view"
+msgstr ""
+
+#: build/index.js:7
+msgid "Or drag the hotspot in the panorama."
+msgstr ""
+
+#: build/index.js:7
+msgid "Delete hotspot"
+msgstr ""
+
+#. translators: %d: the most hotspots a scene can have
+#: build/index.js:7
+#: build/index.js:36
+#, js-format
+msgid "A scene can have up to %d hotspots."
+msgstr ""
+
+#: build/index.js:7
+msgid "Hotspots"
+msgstr ""
+
+#. translators: %s: the scene's name
+#: build/index.js:7
+#: build/view.js:5
+#, js-format
+msgid "Go to %s"
+msgstr ""
+
+#: build/index.js:9
+msgid "Not shown on the page yet"
+msgstr ""
+
+#: build/index.js:9
+msgid "Click the panorama in the block to add a hotspot there. Drag a hotspot to move it."
+msgstr ""
+
+#: build/index.js:9
+msgid "All scenes"
+msgstr ""
+
+#: build/index.js:9
+msgid "Name"
+msgstr ""
+
+#: build/index.js:9
+msgid "Shown in the scene list and on the hotspots that lead here."
+msgstr ""
+
+#: build/index.js:9
+msgid "360° image"
+msgstr ""
+
+#: build/index.js:9
+msgid "This scene has no image, so the page leaves it out."
+msgstr ""
+
+#. translators: 1: the image's width in pixels, 2: its height
+#: build/index.js:12
+#, js-format
+msgid "This image is %1$d × %2$d. A 360° panorama is twice as wide as it is high (2:1), so it may look stretched."
+msgstr ""
+
+#: build/index.js:12
+msgid "Alternative text"
+msgstr ""
+
+#: build/index.js:12
+msgid "Describe the place for people who cannot see the image. Search engines read it too, and it is shown when the 360° view cannot load."
+msgstr ""
+
+#: build/index.js:12
+msgid "Starting view"
+msgstr ""
+
+#. translators: 1: the direction in degrees, 2: up or down in degrees, 3: the zoom, 0 to 100
+#: build/index.js:15
+#, js-format
+msgid "Direction %1$s°, up/down %2$s°, zoom %3$s"
+msgstr ""
+
+#: build/index.js:15
+msgid "Use the current view"
+msgstr ""
+
+#: build/index.js:15
+msgid "Turn and zoom the panorama in the block, then press \"Use the current view\". Visitors start there."
+msgstr ""
+
+#: build/index.js:15
+msgid "The tour starts with this scene."
+msgstr ""
+
+#: build/index.js:15
+msgid "Start the tour here"
+msgstr ""
+
+#: build/index.js:15
+msgid "Delete scene"
+msgstr ""
+
+#: build/index.js:18
+msgid "Add scenes"
+msgstr ""
+
+#. translators: %d: the most scenes a tour can have
+#: build/index.js:21
+#: build/index.js:29
+#, js-format
+msgid "A tour can have up to %d scenes."
+msgstr ""
+
+#: build/index.js:21
+msgid "Start"
+msgstr ""
+
+#. translators: %d: number of hotspots in the scene
+#: build/index.js:24
+#, js-format
+msgid "%d hotspot"
+msgid_plural "%d hotspots"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:24
+msgid "Move up"
+msgstr ""
+
+#: build/index.js:24
+msgid "Move down"
+msgstr ""
+
+#: build/index.js:24
+msgid "Open a scene to edit it; while it is open, click the panorama in the block to add a hotspot. Drag the scenes, or use the arrows, to change their order. The tour starts with the first one."
+msgstr ""
+
+#: build/index.js:24
+msgid "Size"
+msgstr ""
+
+#: build/index.js:24
+msgid "Height"
+msgstr ""
+
+#: build/index.js:24
+msgid "vh is a share of the screen height: 100vh fills the screen."
+msgstr ""
+
+#: build/index.js:24
+msgid "Height on phones"
+msgstr ""
+
+#: build/index.js:24
+msgid "For screens up to 600px wide. Empty: the same as above."
+msgstr ""
+
+#: build/index.js:24
 msgid "Help"
 msgstr ""
 
-#: build/index.js:1
+#: build/index.js:24
 msgid "Email:"
 msgstr ""
 
-#: build/index.js:1
+#: build/index.js:24
 msgid "Scenes"
 msgstr ""
 
 #. translators: %d: number of scenes
-#: build/index.js:4
+#: build/index.js:27
 #, js-format
 msgid "%d scene."
 msgid_plural "%d scenes."
 msgstr[0] ""
 msgstr[1] ""
 
-#: build/index.js:6
-msgid "Add scenes"
-msgstr ""
-
-#. translators: %d: the most scenes a tour can have
-#: build/index.js:8
-#, js-format
-msgid "A tour can have up to %d scenes."
-msgstr ""
-
 #. translators: %s: the image's title or file name
-#: build/index.js:11
+#: build/index.js:32
+#: build/index.js:34
 #, js-format
 msgid "“%s” is not a 360° panorama: its width should be twice its height (2:1). It may look stretched."
 msgstr ""
 
-#: build/index.js:11
+#: build/index.js:36
 msgid "Virtual Tour"
 msgstr ""
 
-#: build/index.js:11
+#: build/index.js:36
 msgid "Choose or upload your 360° panorama images (2:1, for example 6000 × 3000). Each image becomes a scene of the tour."
 msgstr ""
 
@@ -116,12 +382,6 @@ msgstr ""
 #: build/view.js:3
 #, js-format
 msgid "360° view: %s. Use the arrow keys to look around and + or - to zoom."
-msgstr ""
-
-#. translators: %s: the scene's name
-#: build/view.js:5
-#, js-format
-msgid "Go to %s"
 msgstr ""
 
 #: build/view.js:7

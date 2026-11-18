@@ -9,7 +9,7 @@ import useIframeAssets from '../../vendor/softicon-tools/hooks/useIframeAssets';
 import Settings from './Settings/Settings';
 import useScenes, { fixIds } from './Scenes/useScenes';
 import { blockIcon } from '../../utils/icons';
-import { cleanScenes } from '../../utils/scene';
+import { cleanScenes, cssHeight } from '../../utils/scene';
 
 const EMPTY = [];
 
@@ -77,9 +77,10 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const config = JSON.stringify( { ...site, scenes: cleanScenes( raw, true ), editor: true, selected: spot } );
 	useViewer( ref, config, {
 		view: setView,
-		// a click on the panorama adds a hotspot there
+		// a click on the panorama adds a hotspot there, while that scene is open in the sidebar
+		// (a click that only selects the block adds nothing)
 		click: ( { scene, yaw, pitch } ) => {
-			const id = Number.isFinite( yaw ) && Number.isFinite( pitch ) && actions.addHotspot( scene, { yaw, pitch } );
+			const id = scene === editing && Number.isFinite( yaw ) && Number.isFinite( pitch ) && actions.addHotspot( scene, { yaw, pitch } );
 			if ( id ) {
 				open( scene, id );
 			}
@@ -112,6 +113,8 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const blockProps = useBlockProps( {
 		ref: useMergeRefs( [ assetsRef, ref ] ),
 		className: first ? 'alvt_tour' : undefined,
+		// as Block::height() prints it
+		style: first ? { '--alvt-height': cssHeight( attributes.height ) || undefined, '--alvt-height-mobile': cssHeight( attributes.heightMobile ) || undefined } : undefined,
 		'data-alvt': first && ! isPreview ? config : undefined,
 	} );
 

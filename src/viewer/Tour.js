@@ -57,6 +57,14 @@ export default class Tour {
 			}
 		};
 		this.box.addEventListener( 'keydown', this.onKey );
+		// Pannellum follows the window's size only; the block's height can change on its own
+		if ( 'ResizeObserver' in window ) {
+			this.resizer = new window.ResizeObserver( () => this.viewer?.resize() );
+			this.resizer.observe( this.box );
+		}
+		if ( ! this.config.editor ) {
+			this.sceneList();
+		}
 		// the editor may have asked for a scene before the viewer was loaded
 		const asked = this.byId( this.el.alvtShow );
 		this.open( this.config, ( asked || this.config.scenes[ 0 ] )?.id );
@@ -120,6 +128,26 @@ export default class Tour {
 		return { yaw: this.viewer.getYaw(), pitch: this.viewer.getPitch(), hfov: this.viewer.getHfov() };
 	}
 
+	// the scene names under the viewer (render.php) become buttons that open their scene
+	sceneList() {
+		this.items = [ ...this.el.querySelectorAll( '.alvt_scenes .alvt_scene[data-id]' ) ].filter( ( item ) => this.byId( item.dataset.id ) );
+		this.items.forEach( ( item ) => {
+			const button = element( 'button', '', item.textContent.trim() );
+			button.type = 'button';
+			button.addEventListener( 'click', () => this.show( item.dataset.id ) );
+			item.replaceChildren( button );
+		} );
+		this.mark( this.config.scenes[ 0 ]?.id );
+	}
+
+	mark( id ) {
+		( this.items || [] ).forEach( ( item ) => {
+			const on = item.dataset.id === id;
+			item.classList.toggle( 'is-current', on );
+			item.firstChild?.setAttribute( 'aria-current', on ? 'true' : 'false' );
+		} );
+	}
+
 	// the scene and view as the block saves them
 	current() {
 		const at = this.view();
@@ -127,6 +155,7 @@ export default class Tour {
 	}
 
 	destroy() {
+		this.resizer?.disconnect();
 		this.closePopup();
 		this.viewer?.destroy();
 		this.viewer = null;
@@ -177,11 +206,14 @@ export default class Tour {
 			scenes,
 		};
 		this.viewer = pannellum.viewer( this.box, this.pnlm );
+		// no credit link on the site (WordPress.org guideline 10): Pannellum's right-click "about" box goes
+		this.box.querySelector( '.pnlm-about-msg' )?.remove();
 		this.label();
 
 		this.viewer.on( 'scenechange', ( id ) => {
 			this.closePopup();
 			this.label( id );
+			this.mark( id );
 			this.emit( 'alvt:scene', { id } );
 		} );
 		// the original could not be shown (too big for the device, or blocked): once more with the smaller copy

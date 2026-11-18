@@ -23,7 +23,7 @@ class Block {
 		register_block_type( ALVT_PLUGIN_PATH . 'build' );
 	}
 
-	// no Settings/Styles tabs; the site's viewer config for the editor
+	// no inspector tabs; site config for the editor
 	public function editor_settings( $settings ) {
 		$tabs                           = isset( $settings['blockInspectorTabs'] ) && is_array( $settings['blockInspectorTabs'] ) ? $settings['blockInspectorTabs'] : array();
 		$tabs[ self::NAME ]             = false;
@@ -32,7 +32,7 @@ class Block {
 		return $settings;
 	}
 
-	// the editor's viewer: view.js in the editor iframe, where WebGL and pointer events work
+	// view.js in the editor iframe (WebGL, pointer events)
 	public function editor_viewer() {
 		if ( is_admin() ) {
 			wp_enqueue_script( 'softicon-virtual-tour-view-script' );
@@ -43,8 +43,13 @@ class Block {
 		return isset( $data[ $key ] ) && is_scalar( $data[ $key ] ) ? trim( (string) $data[ $key ] ) : '';
 	}
 
+	// sanitize_text_field() turns a lone < into &lt;
+	public static function plain( $value, $max ) {
+		return mb_substr( str_replace( '&lt;', '<', $value ), 0, $max );
+	}
+
 	public static function line( $data, $key, $max ) {
-		return mb_substr( sanitize_text_field( self::text( $data, $key ) ), 0, $max );
+		return self::plain( sanitize_text_field( self::text( $data, $key ) ), $max );
 	}
 
 	public static function id( $data, $key ) {
@@ -57,8 +62,10 @@ class Block {
 		return $value >= $min && $value <= $max ? round( $value, 3 ) : null;
 	}
 
+	// an address with a host, or one on this site
 	public static function link( $value ) {
-		return esc_url_raw( $value, array( 'http', 'https' ) );
+		$url = esc_url_raw( $value, array( 'http', 'https' ) );
+		return preg_match( '#^([/?\#]|https?://[^/?\#]+)#', $url ) ? $url : '';
 	}
 
 	// null when the hotspot has no place or no type
@@ -79,7 +86,7 @@ class Block {
 			'yaw'      => $yaw,
 			'pitch'    => $pitch,
 			'title'    => self::line( $raw, 'title', 200 ),
-			'text'     => mb_substr( sanitize_textarea_field( self::text( $raw, 'text' ) ), 0, 500 ),
+			'text'     => self::plain( sanitize_textarea_field( self::text( $raw, 'text' ) ), 500 ),
 			'imageId'  => isset( $raw['imageId'] ) ? absint( $raw['imageId'] ) : 0,
 			'imageUrl' => self::link( self::text( $raw, 'imageUrl' ) ),
 			'target'   => self::id( $raw, 'target' ),
@@ -134,7 +141,17 @@ class Block {
 		return array_values( $scenes );
 	}
 
-	// the original's width and WordPress's smaller copy, for devices that cannot show the original
+	// px or vh; same check in scene.js cssHeight()
+	public static function height( $attributes ) {
+		$style = '';
+		foreach ( array( 'height' => '', 'heightMobile' => '-mobile' ) as $key => $name ) {
+			$value  = self::text( $attributes, $key );
+			$style .= preg_match( '/^[1-9]\d{0,3}(\.\d{1,2})?(px|vh)$/', $value ) ? "--alvt-height$name:$value;" : '';
+		}
+		return $style;
+	}
+
+	// original width and WP's smaller copy, for small GPUs
 	public static function sizes( $scene ) {
 		$meta = $scene['imageId'] ? wp_get_attachment_metadata( $scene['imageId'] ) : false;
 		$file = wp_basename( (string) wp_parse_url( $scene['imageUrl'], PHP_URL_PATH ) );

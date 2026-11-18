@@ -105,7 +105,7 @@ const SceneList = ( props ) => {
 					</li>;
 				} ) }
 			</ul>
-			<p className="alvtHelp">{ __( 'Drag the scenes, or use the arrows, to change their order. The tour starts with the first one.', 'softicon-virtual-tour' ) }</p>
+			<p className="alvtHelp">{ __( 'Open a scene to edit it; while it is open, click the panorama in the block to add a hotspot. Drag the scenes, or use the arrows, to change their order. The tour starts with the first one.', 'softicon-virtual-tour' ) }</p>
 		</> }
 	</div>;
 };

@@ -31,8 +31,13 @@
 .alvt_stage {
 	position: relative;
 	isolation: isolate;
-	height: min(var(--alvt-height, 480px), 80vh);
+	height: var(--alvt-height, 480px);
 	background: #111;
+
+	// phones: the block's mobile height, else its height
+	@media (max-width: 600px) {
+		height: var(--alvt-height-mobile, var(--alvt-height, 480px));
+	}
 }
 
 .alvt_image {
@@ -60,6 +65,11 @@
 	&:focus-visible {
 		outline: 2px solid #fff;
 		outline-offset: -4px;
+	}
+
+	// Tour.js removes Pannellum's right-click credit link; this hides it should a copy ever stay
+	.pnlm-about-msg {
+		display: none !important;
 	}
 
 	// themes style every image and button
@@ -212,7 +222,7 @@
 	flex-wrap: wrap;
 	gap: 6px;
 	margin: 0;
-	padding: 10px 0 0;
+	padding: 10px 2px 2px;
 	list-style: none;
 	font-size: 0.875em;
 }
@@ -222,4 +232,36 @@
 	padding: 4px 12px;
 	border-radius: 999px;
 	background: rgba(127, 127, 127, 0.14);
+
+	// with the viewer running, each name opens its scene (src/viewer/Tour.js)
+	&:has(> button) {
+		padding: 0;
+	}
+
+	> button {
+		margin: 0;
+		padding: 4px 12px;
+		border: 0;
+		border-radius: inherit;
+		background: none;
+		color: inherit;
+		font: inherit;
+		cursor: pointer;
+
+		&:hover {
+			background: rgba(127, 127, 127, 0.14);
+		}
+
+		// inside the button, in its own text color: seen on the light and the dark (current) button,
+		// and never cut off by the block's rounded edge
+		&:focus-visible {
+			outline: 2px solid currentcolor;
+			outline-offset: -4px;
+		}
+	}
+
+	&.is-current {
+		background: var(--alvt-current, #1e1e1e);
+		color: #fff;
+	}
 }

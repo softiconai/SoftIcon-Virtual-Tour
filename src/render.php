@@ -14,6 +14,7 @@ $alvt_first   = $alvt_scenes[0];
 $alvt_wrapper = get_block_wrapper_attributes(
 	array(
 		'class'     => 'alvt_tour',
+		'style'     => Block::height( $attributes ),
 		'data-alvt' => wp_json_encode( Block::config( $attributes, $alvt_scenes ), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ),
 	)
 );
@@ -23,7 +24,7 @@ $alvt_image   = array(
 	'loading'  => 'lazy',
 	'decoding' => 'async',
 );
-// the first scene as a picture, for search engines and visitors without JavaScript or WebGL; the viewer takes its place
+// first scene for no-JS visitors and search engines
 $alvt_img = $alvt_first['imageId'] ? wp_get_attachment_image( $alvt_first['imageId'], 'full', false, $alvt_image ) : '';
 ?>
 <div <?php echo $alvt_wrapper; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>

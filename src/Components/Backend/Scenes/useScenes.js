@@ -1,36 +1,42 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { useMemo } from '@wordpress/element';
 import { useDispatch, useRegistry } from '@wordpress/data';
-import { isPanorama, maxHotspots, maxScenes, newId, sceneFromMedia } from '../../../utils/scene';
+import { idOf, isPanorama, maxHotspots, maxScenes, newId, sceneFromMedia } from '../../../utils/scene';
 
-// valid ids are what sanitize_key() keeps, and each one once: scenes in the block, hotspots in their scene
-const uniqueIds = ( list, prefix ) => {
+// Ids as the page reads them (sanitize_key(), or s0, s1… when empty), each one once: scenes in the block,
+// hotspots in their scene. A new id is made only for an empty or repeated one, and the hotspots that led
+// to a renamed scene follow it, so a hand-made "Lobby" stays reachable as "lobby".
+const uniqueIds = ( list, prefix, renamed ) => {
 	const seen = new Set();
-	let changed = false;
-	const fixed = list.map( ( item ) => {
+	return list.map( ( item, index ) => {
 		if ( ! item || 'object' !== typeof item ) {
 			return item;
 		}
-		let id = 'string' === typeof item.id ? item.id : '';
-		if ( ! /^[a-z0-9_-]{1,40}$/.test( id ) || seen.has( id ) ) {
-			do {
-				id = newId( prefix );
-			} while ( seen.has( id ) );
-			changed = true;
+		const page = idOf( item.id ) || prefix + index;
+		let id = page;
+		while ( seen.has( id ) ) {
+			id = newId( prefix );
 		}
 		seen.add( id );
+		// the page shows the first one with an id, so that is where its hotspots lead
+		if ( renamed && ! renamed.has( page ) ) {
+			renamed.set( page, id );
+		}
 		return id === item.id ? item : { ...item, id };
 	} );
-	return changed ? fixed : list;
 };
 
 export const fixIds = ( scenes ) => {
-	const fixed = uniqueIds( scenes, 's' ).map( ( scene ) => {
+	const renamed = new Map();
+	const fixed = uniqueIds( scenes, 's', renamed ).map( ( scene ) => {
 		if ( ! scene || 'object' !== typeof scene || ! Array.isArray( scene.hotspots ) ) {
 			return scene;
 		}
-		const hotspots = uniqueIds( scene.hotspots, 'h' );
-		return hotspots === scene.hotspots ? scene : { ...scene, hotspots };
+		const hotspots = uniqueIds( scene.hotspots, 'h' ).map( ( spot ) => {
+			const target = spot && 'object' === typeof spot && renamed.get( idOf( spot.target ) );
+			return target && target !== spot.target ? { ...spot, target } : spot;
+		} );
+		return hotspots.some( ( spot, index ) => spot !== scene.hotspots[ index ] ) ? { ...scene, hotspots } : scene;
 	} );
 	return fixed.some( ( scene, index ) => scene !== scenes[ index ] ) ? fixed : scenes;
 };

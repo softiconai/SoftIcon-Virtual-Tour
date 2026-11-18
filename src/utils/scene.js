@@ -5,8 +5,9 @@ export const maxScenes = 50;
 export const maxHotspots = 50;
 export const hotspotTypes = [ 'scene', 'info', 'link' ];
 
-// like wp_strip_all_tags(): tags go, and so does what is inside script and style
-const strip = ( value ) => value.replace( /<(script|style)[^>]*?>[\s\S]*?<\/\1>/gi, '' ).replace( /<[^>]*>/g, '' );
+// like wp_strip_all_tags(): tags go, and so does what is inside script and style; a < that starts no tag
+// (followed by a space, or never closed) stays, as in PHP
+const strip = ( value ) => value.replace( /<(script|style)[^>]*?>[\s\S]*?<\/\1>/gi, '' ).replace( /<(?!\s)[^>]*>/g, '' );
 
 export const text = ( value ) => ( 'string' === typeof value || 'number' === typeof value ? strip( String( value ) ).trim() : '' );
 
@@ -110,6 +111,9 @@ export const cleanScenes = ( list, keep = false ) => {
 			: scene.hotspots.filter( ( spot ) => leads( spot, scene ) ),
 	} ) );
 };
+
+// a height for the block, px or vh, or ''; the same check is in Block::height()
+export const cssHeight = ( value ) => ( 'string' === typeof value && /^[1-9]\d{0,3}(\.\d{1,2})?(px|vh)$/.test( value.trim() ) ? value.trim() : '' );
 
 // a new id, as sanitize_key() keeps it
 export const newId = ( prefix ) => prefix + Math.random().toString( 36 ).slice( 2, 10 );
