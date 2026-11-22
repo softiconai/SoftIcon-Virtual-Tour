@@ -4,7 +4,7 @@ Tags: virtual tour, 360 panorama, panorama viewer, 360, block
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,6 +15,8 @@ A 360° panorama and virtual tour block. Add scenes and hotspots right in the bl
 **SoftIcon Virtual Tour** adds a **Virtual Tour** block to the block editor. Choose your 360° photos from the Media Library and each one becomes a scene. Click the panorama to add hotspots that take visitors from room to room, show a note or open a link.
 
 Made for real estate listings, hotels, restaurants, shops and showrooms, campuses, museums and galleries.
+
+https://www.youtube.com/watch?v=Q7trSVaGkHk
 
 * **Build the tour in the block editor** – the block shows the real 360° view while you edit. Open a scene in the sidebar, click the panorama to add a hotspot there, and drag it to move it. No separate admin page, no shortcode.
 * **Up to 50 scenes per tour** – and up to 50 hotspots in each scene.
@@ -93,6 +95,10 @@ Yes. Press Tab to reach the panorama, use the arrow keys to look around and + or
 7. On a phone: drag with a finger and pinch to zoom.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fix: images chosen with the empty block's Media Library button now keep their title as the scene name and use the original upload, not the smaller "-scaled" copy WordPress makes of big images.
+* A video in the description shows how to build a tour and what every setting does.
 
 = 1.0.0 =
 * First release.

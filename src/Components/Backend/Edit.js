@@ -1,7 +1,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { BlockIcon, MediaPlaceholder, useBlockProps } from '@wordpress/block-editor';
-import { Placeholder } from '@wordpress/components';
+import { BlockIcon, MediaPlaceholder, MediaUpload, useBlockProps } from '@wordpress/block-editor';
+import { Button, Placeholder } from '@wordpress/components';
 import { useMergeRefs } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
 // copied from the shared softicon-tools folder by `npm run tools` (prebuild), edit it there
@@ -131,6 +131,15 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 			allowedTypes={ [ 'image' ] }
 			multiple
 			onSelect={ actions.addMedia }
+			// its own library button opens WordPress's gallery frame, which drops the title and the original image's URL
+			mediaLibraryButton={ () => <MediaUpload
+				allowedTypes={ [ 'image' ] }
+				multiple
+				onSelect={ actions.addMedia }
+				render={ ( { open: openLibrary } ) => <Button variant="secondary" onClick={ openLibrary } __next40pxDefaultSize>
+					{ __( 'Media Library', 'softicon-virtual-tour' ) }
+				</Button> }
+			/> }
 		/>;
 
 	return <>
