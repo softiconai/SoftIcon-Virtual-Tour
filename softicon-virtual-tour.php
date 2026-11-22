@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: SoftIcon Virtual Tour
+ * Plugin Name: SoftIcon Virtual Tour – 360° Panorama Viewer Block
  * Description: A 360° panorama and virtual tour block. Add scenes and hotspots right in the block editor. No external services.
  * Version: 1.0.0
  * Requires at least: 6.5

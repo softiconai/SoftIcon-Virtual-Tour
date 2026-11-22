@@ -1,4 +1,4 @@
-=== SoftIcon Virtual Tour ===
+=== SoftIcon Virtual Tour – 360° Panorama Viewer Block ===
 Contributors: softiconai
 Tags: virtual tour, 360 panorama, panorama viewer, 360, block
 Requires at least: 6.5
@@ -81,6 +81,16 @@ The plugin is a block for the block editor. You can build the tour in a reusable
 = Can visitors use the keyboard? =
 
 Yes. Press Tab to reach the panorama, use the arrow keys to look around and + or - to zoom. Hotspots and the scene names are buttons you can reach with Tab and press with Enter.
+
+== Screenshots ==
+
+1. A tour on a page. Drag to look around, click an arrow to go to the next room, or pick a room under the panorama.
+2. Build the tour in the block editor. The block shows the real 360° view, and the sidebar lists the scenes.
+3. An open scene: its name, hotspots and image. While it is open, click the panorama to add a hotspot there.
+4. Editing an info hotspot: a title, text and an image if you like.
+5. An info hotspot opens a small box on the page.
+6. A link hotspot shows its title when you point at it.
+7. On a phone: drag with a finger and pinch to zoom.
 
 == Changelog ==
 

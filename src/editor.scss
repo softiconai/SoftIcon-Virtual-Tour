@@ -152,6 +152,11 @@
 	.components-notice {
 		margin: 0;
 	}
+
+	// the hotspot list, as wide as the scene list
+	.alvtRows {
+		align-self: stretch;
+	}
 }
 
 .alvtImage img {
