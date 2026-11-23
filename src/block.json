@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "softicon/virtual-tour",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"title": "Virtual Tour",
 	"category": "media",
 	"description": "A 360° panorama or a virtual tour of several scenes, with hotspots. Built right in the block editor.",
@@ -11,7 +11,15 @@
 	"attributes": {
 		"scenes": { "type": "array", "default": [] },
 		"height": { "type": "string", "default": "480px" },
-		"heightMobile": { "type": "string", "default": "" }
+		"heightMobile": { "type": "string", "default": "" },
+		"autoRotate": { "type": "number", "default": 0 },
+		"loadOnClick": { "type": "boolean", "default": false },
+		"zoomButtons": { "type": "boolean", "default": true },
+		"fullscreenButton": { "type": "boolean", "default": true },
+		"sceneList": { "type": "string", "default": "names" },
+		"spotColor": { "type": "string", "default": "" },
+		"spotSize": { "type": "number", "default": 36 },
+		"accentColor": { "type": "string", "default": "" }
 	},
 	"supports": {
 		"html": false,

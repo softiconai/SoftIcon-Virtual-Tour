@@ -8,8 +8,9 @@ import { useSelect } from '@wordpress/data';
 import useIframeAssets from '../../vendor/softicon-tools/hooks/useIframeAssets';
 import Settings from './Settings/Settings';
 import useScenes, { fixIds } from './Scenes/useScenes';
+import useImage from './Scenes/useImage';
 import { blockIcon } from '../../utils/icons';
-import { cleanScenes, cssHeight } from '../../utils/scene';
+import { cleanScenes, cleanView, cssHeight, viewStyle } from '../../utils/scene';
 
 const EMPTY = [];
 
@@ -38,6 +39,22 @@ const useViewer = ( ref, key, on ) => {
 		el?.ownerDocument.dispatchEvent( new window.Event( 'alvt:boot' ) );
 		el?.dispatchEvent( new window.Event( 'alvt:update' ) );
 	}, [ ref, key ] );
+};
+
+// a scene under the viewer, as view.js draws it on the page
+const SceneItem = ( { scene, index, thumbs, current } ) => {
+	const { thumb } = useImage( thumbs ? scene.imageId : 0, 'medium' );
+	return <li className={ 'alvt_scene' + ( current ? ' is-current' : '' ) } data-id={ scene.id }>
+		<span className="alvt_pick">
+			{ thumbs && ( thumb ? <img src={ thumb } alt="" /> : <span className="alvt_nopic" /> ) }
+			<span>
+				{
+					// translators: %d: the scene's number in the tour
+					scene.title || sprintf( __( 'Scene %d', 'softicon-virtual-tour' ), index + 1 )
+				}
+			</span>
+		</span>
+	</li>;
 };
 
 const Edit = ( { attributes, setAttributes, clientId } ) => {
@@ -74,7 +91,9 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	// as render.php prints it; the editor's viewer also shows the hotspots the page leaves out until they are filled in
 	const scenes = cleanScenes( raw );
 	const first = scenes[ 0 ];
-	const config = JSON.stringify( { ...site, scenes: cleanScenes( raw, true ), editor: true, selected: spot } );
+	const options = cleanView( attributes );
+	// a view setting from the alvt_config filter wins, as on the page
+	const config = JSON.stringify( { ...options, ...site, scenes: cleanScenes( raw, true ), editor: true, selected: spot } );
 	useViewer( ref, config, {
 		view: setView,
 		// a click on the panorama adds a hotspot there, while that scene is open in the sidebar
@@ -113,8 +132,8 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 	const blockProps = useBlockProps( {
 		ref: useMergeRefs( [ assetsRef, ref ] ),
 		className: first ? 'alvt_tour' : undefined,
-		// as Block::height() prints it
-		style: first ? { '--alvt-height': cssHeight( attributes.height ) || undefined, '--alvt-height-mobile': cssHeight( attributes.heightMobile ) || undefined } : undefined,
+		// as Block::height() prints it, and the colors as view.js sets them
+		style: first ? { '--alvt-height': cssHeight( attributes.height ) || undefined, '--alvt-height-mobile': cssHeight( attributes.heightMobile ) || undefined, ...viewStyle( options ) } : undefined,
 		'data-alvt': first && ! isPreview ? config : undefined,
 	} );
 
@@ -153,13 +172,8 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 						{ /* Pannellum fills this, React leaves its content alone */ }
 						{ ! isPreview && <div className="alvt_viewer" /> }
 					</div>
-					{ scenes.length > 1 && <ul className="alvt_scenes">
-						{ scenes.map( ( scene, index ) => <li key={ scene.id } className="alvt_scene" data-id={ scene.id }>
-							{
-								// translators: %d: the scene's number in the tour
-								scene.title || sprintf( __( 'Scene %d', 'softicon-virtual-tour' ), index + 1 )
-							}
-						</li> ) }
+					{ scenes.length > 1 && <ul className={ 'alvt_scenes' + ( 'thumbnails' === options.sceneList ? ' alvt_thumbs' : '' ) } hidden={ 'none' === options.sceneList }>
+						{ scenes.map( ( scene, index ) => <SceneItem key={ scene.id } { ...{ scene, index, thumbs: 'thumbnails' === options.sceneList, current: scene.id === ( view?.scene || first.id ) } } /> ) }
 					</ul> }
 				</>
 				: empty }

@@ -12,6 +12,7 @@ class Block {
 	const SCENES   = 50;
 	const HOTSPOTS = 50;
 	const TYPES    = array( 'scene', 'info', 'link' );
+	const VIEW     = array( 'autoRotate', 'loadOnClick', 'zoomButtons', 'fullscreenButton', 'sceneList', 'spotColor', 'spotSize', 'accentColor' );
 
 	public function __construct() {
 		add_action( 'init', array( $this, 'register' ) );
@@ -23,7 +24,7 @@ class Block {
 		register_block_type( ALVT_PLUGIN_PATH . 'build' );
 	}
 
-	// no inspector tabs; site config for the editor
+	// editor settings
 	public function editor_settings( $settings ) {
 		$tabs                           = isset( $settings['blockInspectorTabs'] ) && is_array( $settings['blockInspectorTabs'] ) ? $settings['blockInspectorTabs'] : array();
 		$tabs[ self::NAME ]             = false;
@@ -32,7 +33,7 @@ class Block {
 		return $settings;
 	}
 
-	// view.js in the editor iframe (WebGL, pointer events)
+	// view.js in the editor iframe
 	public function editor_viewer() {
 		if ( is_admin() ) {
 			wp_enqueue_script( 'softicon-virtual-tour-view-script' );
@@ -56,7 +57,6 @@ class Block {
 		return substr( sanitize_key( self::text( $data, $key ) ), 0, 40 );
 	}
 
-	// a number in min..max, or null
 	public static function num( $data, $key, $min, $max ) {
 		$value = isset( $data[ $key ] ) && is_numeric( $data[ $key ] ) && ! is_bool( $data[ $key ] ) ? (float) $data[ $key ] : INF;
 		return $value >= $min && $value <= $max ? round( $value, 3 ) : null;
@@ -68,7 +68,6 @@ class Block {
 		return preg_match( '#^([/?\#]|https?://[^/?\#]+)#', $url ) ? $url : '';
 	}
 
-	// null when the hotspot has no place or no type
 	public static function hotspot( $raw, $index ) {
 		if ( ! is_array( $raw ) ) {
 			return null;
@@ -94,7 +93,6 @@ class Block {
 		);
 	}
 
-	// null when the scene has no image
 	public static function scene( $raw, $index ) {
 		if ( ! is_array( $raw ) ) {
 			return null;
@@ -116,7 +114,7 @@ class Block {
 		return '' === $scene['imageUrl'] ? null : $scene;
 	}
 
-	// what the page shows: each id once, hotspots that lead somewhere
+	// each id once, hotspots that lead somewhere
 	public static function scenes( $attributes ) {
 		$list   = isset( $attributes['scenes'] ) && is_array( $attributes['scenes'] ) ? array_slice( array_values( $attributes['scenes'] ), 0, self::SCENES ) : array();
 		$scenes = array();
@@ -141,7 +139,7 @@ class Block {
 		return array_values( $scenes );
 	}
 
-	// px or vh; same check in scene.js cssHeight()
+	// same check in scene.js cssHeight()
 	public static function height( $attributes ) {
 		$style = '';
 		foreach ( array( 'height' => '', 'heightMobile' => '-mobile' ) as $key => $name ) {
@@ -151,12 +149,16 @@ class Block {
 		return $style;
 	}
 
-	// original width and WP's smaller copy, for small GPUs
+	// width, smaller copy, thumbnail
 	public static function sizes( $scene ) {
 		$meta = $scene['imageId'] ? wp_get_attachment_metadata( $scene['imageId'] ) : false;
 		$file = wp_basename( (string) wp_parse_url( $scene['imageUrl'], PHP_URL_PATH ) );
 		if ( ! is_array( $meta ) || empty( $meta['file'] ) ) {
 			return $scene;
+		}
+		$thumb = image_get_intermediate_size( $scene['imageId'], 'medium' );
+		if ( $thumb && '' !== $file && in_array( $file, array( wp_basename( $meta['file'] ), $meta['original_image'] ?? '' ), true ) ) {
+			$scene['thumb'] = $thumb['url'];
 		}
 		if ( empty( $meta['original_image'] ) ) {
 			$scene['width'] = wp_basename( $meta['file'] ) === $file && isset( $meta['width'] ) ? absint( $meta['width'] ) : 0;
@@ -169,8 +171,8 @@ class Block {
 		return $scene;
 	}
 
-	// read by view.js
+	// VIEW is checked in scene.js cleanView()
 	public static function config( $attributes, $scenes = array() ) {
-		return apply_filters( 'alvt_config', array( 'scenes' => array_map( array( __CLASS__, 'sizes' ), $scenes ) ), $attributes );
+		return apply_filters( 'alvt_config', array( 'scenes' => array_map( array( __CLASS__, 'sizes' ), $scenes ) ) + array_intersect_key( $attributes, array_flip( self::VIEW ) ), $attributes );
 	}
 }

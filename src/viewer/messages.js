@@ -4,6 +4,7 @@ import { __, sprintf } from '@wordpress/i18n';
 export const text = {
 	close: __( 'Close', 'softicon-virtual-tour' ),
 	hotspot: __( 'Hotspot', 'softicon-virtual-tour' ),
+	load: __( 'View in 360°', 'softicon-virtual-tour' ),
 	noWebgl: __( 'This browser cannot show the 360° view.', 'softicon-virtual-tour' ),
 	// translators: %s: the scene's name
 	view: ( scene ) => sprintf( __( '360° view: %s. Use the arrow keys to look around and + or - to zoom.', 'softicon-virtual-tour' ), scene ),

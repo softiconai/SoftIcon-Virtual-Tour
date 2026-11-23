@@ -233,35 +233,132 @@
 	border-radius: 999px;
 	background: rgba(127, 127, 127, 0.14);
 
-	// with the viewer running, each name opens its scene (src/viewer/Tour.js)
-	&:has(> button) {
+	// view.js (the page) and Edit.js put the name in .alvt_pick; on the page it is a button that opens the scene
+	&:has(> .alvt_pick) {
 		padding: 0;
-	}
-
-	> button {
-		margin: 0;
-		padding: 4px 12px;
-		border: 0;
-		border-radius: inherit;
-		background: none;
-		color: inherit;
-		font: inherit;
-		cursor: pointer;
-
-		&:hover {
-			background: rgba(127, 127, 127, 0.14);
-		}
-
-		// inside the button, in its own text color: seen on the light and the dark (current) button,
-		// and never cut off by the block's rounded edge
-		&:focus-visible {
-			outline: 2px solid currentcolor;
-			outline-offset: -4px;
-		}
 	}
 
 	&.is-current {
 		background: var(--alvt-current, #1e1e1e);
 		color: #fff;
+	}
+}
+
+.alvt_pick {
+	display: block;
+	margin: 0;
+	padding: 4px 12px;
+	border: 0;
+	border-radius: inherit;
+	background: none;
+	color: inherit;
+	font: inherit;
+	line-height: inherit;
+	text-align: center;
+
+	&:is(button) {
+		cursor: pointer;
+
+		&:hover {
+			background: rgba(127, 127, 127, 0.14);
+		}
+	}
+
+	// inside the button, in its own text color: seen on the light and the dark (current) button,
+	// and never cut off by the block's rounded edge
+	&:focus-visible {
+		outline: 2px solid currentcolor;
+		outline-offset: -4px;
+	}
+
+	img,
+	.alvt_nopic {
+		display: block;
+		width: 112px;
+		max-width: none;
+		height: 56px;
+		margin: 0 0 4px;
+		border-radius: 6px;
+		object-fit: cover;
+		box-shadow: none;
+	}
+
+	// a scene without a Media Library image
+	.alvt_nopic {
+		background: rgba(127, 127, 127, 0.25);
+	}
+}
+
+// "Pictures": one row of small panoramas that scrolls sideways
+.alvt_thumbs {
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	gap: 8px;
+	padding-bottom: 6px;
+	scrollbar-width: thin;
+
+	.alvt_scene {
+		flex: none;
+		border-radius: 8px;
+	}
+
+	.alvt_pick {
+		width: 124px;
+		padding: 6px;
+
+		span {
+			display: block;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+	}
+}
+
+// "Load the tour on click": over the first scene's picture until pressed (view.js)
+.alvt_load {
+	position: absolute;
+	z-index: 2;
+	top: 50%;
+	left: 50%;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	padding: 12px 22px;
+	border: 2px solid #fff;
+	border-radius: 999px;
+	background: var(--alvt-current, rgba(0, 0, 0, 0.6));
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+	color: #fff;
+	font: inherit;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.2;
+	white-space: nowrap;
+	cursor: pointer;
+	transform: translate(-50%, -50%);
+	transition: transform 0.15s;
+
+	// a ring around the globe, like the block's icon
+	&::before {
+		content: "";
+		width: 18px;
+		height: 18px;
+		border: 2px solid currentcolor;
+		border-radius: 50%;
+	}
+
+	&:hover {
+		transform: translate(-50%, -50%) scale(1.05);
+	}
+
+	&:focus-visible {
+		outline: 2px solid #fff;
+		outline-offset: 3px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
 	}
 }

@@ -5,7 +5,7 @@ import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import SceneForm from './SceneForm';
 import useImage from './useImage';
 import { icons } from '../../../utils/icons';
-import { maxScenes } from '../../../utils/scene';
+import { line, maxScenes } from '../../../utils/scene';
 
 const Thumb = ( { scene } ) => {
 	const { thumb } = useImage( scene.imageId );
@@ -14,7 +14,8 @@ const Thumb = ( { scene } ) => {
 		: <span className="alvtThumb" aria-hidden="true" />;
 };
 
-export const sceneName = ( scene, index ) => ( 'string' === typeof scene.title && scene.title.trim() ) ||
+// as the page shows it: tags in a hand-made title go
+export const sceneName = ( scene, index ) => line( scene.title, 200 ) ||
 	// translators: %d: the scene's number in the tour
 	sprintf( __( 'Scene %d', 'softicon-virtual-tour' ), index + 1 );
 

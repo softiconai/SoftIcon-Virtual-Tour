@@ -12,7 +12,7 @@ const strip = ( value ) => value.replace( /<(script|style)[^>]*?>[\s\S]*?<\/\1>/
 export const text = ( value ) => ( 'string' === typeof value || 'number' === typeof value ? strip( String( value ) ).trim() : '' );
 
 // as sanitize_text_field() leaves it (no %xx codes, single spaces), at most max characters
-const line = ( value, max ) => [ ...text( value ).replace( /%[a-f0-9]{2}/gi, '' ).replace( /\s+/g, ' ' ).trim() ].slice( 0, max ).join( '' );
+export const line = ( value, max ) => [ ...text( value ).replace( /%[a-f0-9]{2}/gi, '' ).replace( /\s+/g, ' ' ).trim() ].slice( 0, max ).join( '' );
 
 // as sanitize_key() keeps it
 export const idOf = ( value ) => text( value ).toLowerCase().replace( /[^a-z0-9_-]/g, '' ).slice( 0, 40 );
@@ -114,6 +114,41 @@ export const cleanScenes = ( list, keep = false ) => {
 
 // a height for the block, px or vh, or ''; the same check is in Block::height()
 export const cssHeight = ( value ) => ( 'string' === typeof value && /^[1-9]\d{0,3}(\.\d{1,2})?(px|vh)$/.test( value.trim() ) ? value.trim() : '' );
+
+// The viewer's settings. PHP passes these attributes as they are (Block::config()), and this is the one place
+// that checks them, for the page (view.js) and the editor; the defaults are what 1.0 did.
+export const sceneLists = [ 'names', 'thumbnails', 'none' ];
+
+const color = ( value ) => {
+	const raw = 'string' === typeof value ? value.trim() : '';
+	return /^(#[0-9a-f]{3,8}|(rgb|hsl)a?\([\d\s.,%/+-]+\)|var\(--wp--preset--color--[a-z0-9-]+\))$/i.test( raw ) ? raw : '';
+};
+
+// numbers as the editor reads them (a numeric string in the block comment is not one there, so not here either)
+const number = ( value, min, max ) => ( 'number' === typeof value ? num( value, min, max ) : null );
+
+export const cleanView = ( raw ) => {
+	const view = raw && 'object' === typeof raw ? raw : {};
+	// trimmed, as render.php reads it for "none"
+	const list = text( view.sceneList );
+	return {
+		autoRotate: number( view.autoRotate, 0, 10 ) ?? 0,
+		loadOnClick: true === view.loadOnClick,
+		zoomButtons: false !== view.zoomButtons,
+		fullscreenButton: false !== view.fullscreenButton,
+		sceneList: sceneLists.includes( list ) ? list : 'names',
+		spotColor: color( view.spotColor ),
+		spotSize: Math.round( number( view.spotSize, 24, 64 ) ?? 36 ),
+		accentColor: color( view.accentColor ),
+	};
+};
+
+// the colors and the hotspot size as CSS variables on the block (style.scss)
+export const viewStyle = ( view ) => ( {
+	'--alvt-spot': view.spotColor || undefined,
+	'--alvt-current': view.accentColor || undefined,
+	'--alvt-spot-size': 36 !== view.spotSize ? view.spotSize + 'px' : undefined,
+} );
 
 // a new id, as sanitize_key() keeps it
 export const newId = ( prefix ) => prefix + Math.random().toString( 36 ).slice( 2, 10 );

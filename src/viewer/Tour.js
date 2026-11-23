@@ -57,15 +57,17 @@ export default class Tour {
 			}
 		};
 		this.box.addEventListener( 'keydown', this.onKey );
+		// autorotate stops for good once the visitor takes over, also in the next scenes
+		this.onTouch = () => {
+			this.still = true;
+		};
+		[ 'pointerdown', 'keydown', 'wheel' ].forEach( ( type ) => this.el.addEventListener( type, this.onTouch, true ) );
 		// Pannellum follows the window's size only; the block's height can change on its own
 		if ( 'ResizeObserver' in window ) {
 			this.resizer = new window.ResizeObserver( () => this.viewer?.resize() );
 			this.resizer.observe( this.box );
 		}
-		if ( ! this.config.editor ) {
-			this.sceneList();
-		}
-		// the editor may have asked for a scene before the viewer was loaded
+		// a scene asked for before the viewer was loaded (the editor's sidebar, or the page's scene list)
 		const asked = this.byId( this.el.alvtShow );
 		this.open( this.config, ( asked || this.config.scenes[ 0 ] )?.id );
 	}
@@ -80,8 +82,15 @@ export default class Tour {
 		}
 		const before = this.byId( id );
 		const now = this.byId( id, config );
+		// Pannellum draws its buttons only when it starts
+		const buttons = config.zoomButtons !== this.config.zoomButtons || config.fullscreenButton !== this.config.fullscreenButton;
+		// a new speed in the editor is shown at once
+		const turned = config.autoRotate !== this.config.autoRotate;
+		if ( turned ) {
+			this.still = false;
+		}
 		// Pannellum's hotspots can be changed in place only on a loaded scene
-		if ( ! now || ! before || this.pictureOf( before ) !== this.pictureOf( now ) || ! this.viewer.isLoaded() ) {
+		if ( buttons || ! now || ! before || this.pictureOf( before ) !== this.pictureOf( now ) || ! this.viewer.isLoaded() ) {
 			this.open( config, now ? id : config.scenes[ 0 ]?.id, now ? this.view() : null );
 			return;
 		}
@@ -107,10 +116,27 @@ export default class Tour {
 			this.viewer.lookAt( now.pitch, now.yaw, next[ id ].hfov, reducedMotion() ? false : 600 );
 		}
 		this.relabel();
+		if ( turned ) {
+			this.rotate();
+		}
 	}
 
-	// the editor's scene list opens a scene in the viewer
-	// the editor's scene list opens a scene; with a hotspot, the view turns to it
+	// Pannellum turns the panorama to the left for a positive speed; ours turns it to the right
+	speed() {
+		return this.config.autoRotate && ! this.still && ! reducedMotion() ? -this.config.autoRotate : false;
+	}
+
+	rotate() {
+		// the next scenes start with it too
+		this.pnlm.default.autoRotate = this.speed();
+		if ( this.speed() ) {
+			this.viewer.startAutoRotate( this.speed() );
+		} else {
+			this.viewer.stopAutoRotate();
+		}
+	}
+
+	// the scene lists (the editor's sidebar, the page's buttons) open a scene; with a hotspot, the view turns to it
 	show( id, spotId ) {
 		const scene = this.viewer && this.byId( id );
 		const spot = scene?.hotspots.find( ( item ) => item.id === spotId );
@@ -128,26 +154,6 @@ export default class Tour {
 		return { yaw: this.viewer.getYaw(), pitch: this.viewer.getPitch(), hfov: this.viewer.getHfov() };
 	}
 
-	// the scene names under the viewer (render.php) become buttons that open their scene
-	sceneList() {
-		this.items = [ ...this.el.querySelectorAll( '.alvt_scenes .alvt_scene[data-id]' ) ].filter( ( item ) => this.byId( item.dataset.id ) );
-		this.items.forEach( ( item ) => {
-			const button = element( 'button', '', item.textContent.trim() );
-			button.type = 'button';
-			button.addEventListener( 'click', () => this.show( item.dataset.id ) );
-			item.replaceChildren( button );
-		} );
-		this.mark( this.config.scenes[ 0 ]?.id );
-	}
-
-	mark( id ) {
-		( this.items || [] ).forEach( ( item ) => {
-			const on = item.dataset.id === id;
-			item.classList.toggle( 'is-current', on );
-			item.firstChild?.setAttribute( 'aria-current', on ? 'true' : 'false' );
-		} );
-	}
-
 	// the scene and view as the block saves them
 	current() {
 		const at = this.view();
@@ -156,6 +162,7 @@ export default class Tour {
 
 	destroy() {
 		this.resizer?.disconnect();
+		[ 'pointerdown', 'keydown', 'wheel' ].forEach( ( type ) => this.el.removeEventListener( type, this.onTouch, true ) );
 		this.closePopup();
 		this.viewer?.destroy();
 		this.viewer = null;
@@ -197,6 +204,9 @@ export default class Tour {
 				compass: false,
 				// the page scrolls with the wheel; the wheel zooms only in fullscreen
 				mouseZoom: 'fullscreenonly',
+				showZoomCtrl: config.zoomButtons,
+				showFullscreenCtrl: config.fullscreenButton,
+				autoRotate: this.speed(),
 				minHfov,
 				maxHfov,
 				sceneFadeDuration: reducedMotion() ? 0 : 600,
@@ -213,7 +223,10 @@ export default class Tour {
 		this.viewer.on( 'scenechange', ( id ) => {
 			this.closePopup();
 			this.label( id );
-			this.mark( id );
+			// each scene starts with the default's autorotate again
+			if ( ! this.speed() ) {
+				this.viewer.stopAutoRotate();
+			}
 			this.emit( 'alvt:scene', { id } );
 		} );
 		// the original could not be shown (too big for the device, or blocked): once more with the smaller copy
@@ -233,11 +246,14 @@ export default class Tour {
 			const report = () => this.emit( 'alvt:view', this.current() );
 			this.viewer.on( 'load', report );
 			this.viewer.on( 'animatefinished', report );
-			this.viewer.on( 'mousedown', ( event ) => {
-				this.down = [ event.clientX, event.clientY ];
+			// pointer events, so a tap on a tablet adds a hotspot too (Pannellum's own events are mouse or touch);
+			// on Pannellum's drag layer only, not on its buttons or a hotspot; one finger only
+			const layer = this.box.querySelector( '.pnlm-dragfix' );
+			layer?.addEventListener( 'pointerdown', ( event ) => {
+				this.down = event.isPrimary ? [ event.clientX, event.clientY ] : null;
 			} );
-			this.viewer.on( 'mouseup', ( event ) => {
-				const [ x, y ] = this.down || [];
+			layer?.addEventListener( 'pointerup', ( event ) => {
+				const [ x, y ] = event.isPrimary && this.down ? this.down : [];
 				this.down = null;
 				const [ pitch, yaw ] = undefined !== x && Math.hypot( event.clientX - x, event.clientY - y ) < 5 ? this.viewer.mouseEventToCoords( event ) : [];
 				if ( Number.isFinite( yaw ) && Number.isFinite( pitch ) ) {
@@ -335,6 +351,8 @@ export default class Tour {
 
 	// the editor moves a hotspot by dragging it; the block saves where it was let go (alvt:moved)
 	draggable( control, spot ) {
+		// a finger drags the hotspot, not the page
+		control.style.touchAction = 'none';
 		control.addEventListener( 'pointerdown', ( down ) => {
 			const scene = this.viewer.getScene();
 			const hotspot = this.pnlm.scenes[ scene ]?.hotSpots.find( ( item ) => item.id === spot.id );

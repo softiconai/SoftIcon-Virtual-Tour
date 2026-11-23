@@ -37,7 +37,7 @@ $alvt_img = $alvt_first['imageId'] ? wp_get_attachment_image( $alvt_first['image
 		<div class="alvt_viewer"></div>
 	</div>
 	<?php if ( count( $alvt_scenes ) > 1 ) : ?>
-		<ul class="alvt_scenes">
+		<ul class="alvt_scenes"<?php echo 'none' === Block::text( $attributes, 'sceneList' ) ? ' hidden' : ''; ?>>
 			<?php foreach ( $alvt_scenes as $alvt_index => $alvt_scene ) : ?>
 				<?php // translators: %d: the scene's number in the tour ?>
 				<li class="alvt_scene" data-id="<?php echo esc_attr( $alvt_scene['id'] ); ?>"><?php echo esc_html( '' !== $alvt_scene['title'] ? $alvt_scene['title'] : sprintf( __( 'Scene %d', 'softicon-virtual-tour' ), $alvt_index + 1 ) ); ?></li>

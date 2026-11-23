@@ -58,11 +58,17 @@ const useScenes = ( clientId ) => {
 		return {
 			get,
 			set,
-			// images from the Media Library or an upload; an image still uploading has no id yet and comes again
+			// Images from the Media Library or an upload. An upload calls this again each time one of its files is done,
+			// with all of them: the scenes are added once every file has its id, in the order they were chosen
+			// (a file that failed is left out of the list by WordPress).
 			addMedia: ( media ) => {
+				const list = Array.isArray( media ) ? media : [ media ];
+				if ( list.some( ( item ) => ! item?.id ) ) {
+					return;
+				}
 				const scenes = get();
 				const known = new Set( scenes.map( ( scene ) => scene?.imageId ).filter( Boolean ) );
-				const fresh = ( Array.isArray( media ) ? media : [ media ] ).filter( ( item ) => item?.id && item.url && ! known.has( item.id ) );
+				const fresh = list.filter( ( item ) => item.url && ! known.has( item.id ) );
 				const room = Math.max( 0, maxScenes - scenes.length );
 				if ( fresh.length > room ) {
 					// translators: %d: the most scenes a tour can have

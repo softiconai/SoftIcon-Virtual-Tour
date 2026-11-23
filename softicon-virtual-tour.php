@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SoftIcon Virtual Tour – 360° Panorama Viewer Block
  * Description: A 360° panorama and virtual tour block. Add scenes and hotspots right in the block editor. No external services.
- * Version: 1.0.1
+ * Version: 1.1.0
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Author: softiconai
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'ALVT_PLUGIN_VERSION', '1.0.1' );
+define( 'ALVT_PLUGIN_VERSION', '1.1.0' );
 define( 'ALVT_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 
 require_once ALVT_PLUGIN_PATH . 'includes/class-block.php';

@@ -2,7 +2,7 @@ import { useSelect } from '@wordpress/data';
 
 // a scene's image from the Media Library: a small copy for the sidebar, and its size for the 2:1 check
 const useImage = ( imageId, size = 'thumbnail' ) => useSelect( ( select ) => {
-	const media = imageId ? select( 'core' ).getMedia( imageId, { context: 'view' } ) : null;
+	const media = imageId ? select( 'core' ).getEntityRecord( 'postType', 'attachment', imageId, { context: 'view' } ) : null;
 	if ( ! media ) {
 		return {};
 	}

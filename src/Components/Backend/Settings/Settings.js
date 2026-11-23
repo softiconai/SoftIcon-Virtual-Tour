@@ -5,6 +5,9 @@ import { HelpCards, Panel, PanelGroup } from '../../../vendor/softicon-tools/com
 import { helpCards } from '../../../utils/options';
 import SceneList from '../Scenes/SceneList';
 import SizePanel from './Size';
+import StylePanel from './Style';
+import ViewerPanel from './Viewer';
+import { cleanView } from '../../../utils/scene';
 
 // the help cards, last in the sidebar
 const Help = () => <Panel id="help" title={ __( 'Help', 'softicon-virtual-tour' ) }>
@@ -24,11 +27,14 @@ const ScenesPanel = ( props ) => <Panel id="scenes" title={ __( 'Scenes', 'softi
 
 const Settings = ( props ) => {
 	const { attributes, setAttributes, scenes } = props;
+	const options = cleanView( attributes );
 	return <InspectorControls>
 		<div className="siSettings">
 			<PanelGroup initial="scenes">
 				<ScenesPanel { ...props } />
+				<ViewerPanel { ...{ setAttributes, options } } />
 				<SizePanel { ...{ attributes, setAttributes } } />
+				<StylePanel { ...{ setAttributes, options } } />
 
 				{ /* Add-ons append their own panels. */ }
 				{ applyFilters( 'alvt.block.inspector', null, { tab: 'general', attributes, setAttributes, scenes } ) }

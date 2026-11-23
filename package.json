@@ -1,6 +1,6 @@
 {
 	"name": "softicon-virtual-tour",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"description": "360° panorama and virtual tour block for WordPress: scenes and hotspots built in the block editor",
 	"main": "build/index.js",
 	"scripts": {

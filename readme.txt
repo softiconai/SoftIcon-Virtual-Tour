@@ -4,7 +4,7 @@ Tags: virtual tour, 360 panorama, panorama viewer, 360, block
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,10 +22,13 @@ https://www.youtube.com/watch?v=Q7trSVaGkHk
 * **Up to 50 scenes per tour** – and up to 50 hotspots in each scene.
 * **Three kinds of hotspots** – go to another scene, show information (title, text and an image in a small box), or open a link.
 * **Your starting view** – turn and zoom the panorama, then press **Use the current view**. Visitors start each scene there.
-* **Scene list** – the scene names under the panorama let visitors jump to any room.
+* **Scene list** – the scene names, or small pictures of the scenes, under the panorama let visitors jump to any room. Or hide the list and let the hotspots lead the way.
+* **Rotate on its own** – the panorama turns slowly, at your speed, until the visitor takes over. It stays still for visitors who ask their device for less motion.
+* **Load on click** – the page shows the first picture with a "View in 360°" button, and the viewer loads only when it is pressed. Saves data on phones.
+* **Your colors and buttons** – the hotspots' color and size, the color of the current scene and the button, and whether the zoom and fullscreen buttons show.
 * **Full image quality** – the block uses your original upload, not the smaller copy WordPress makes of big images.
 * **Works on phones** – drag with a finger, pinch to zoom, fullscreen, and look around by moving the phone where the device allows it. If a phone cannot show a very large image, the block uses WordPress's smaller copy for that phone only.
-* **Fast** – the viewer loads only when the tour comes near the screen, and each scene's image only when the scene is opened. The viewer is about 25 KB (gzip).
+* **Fast** – the viewer loads only when the tour comes near the screen (or when it is clicked), and each scene's image only when the scene is opened. The viewer is about 25 KB (gzip).
 * **Accessible** – alternative text for each scene, keyboard control (arrow keys to look around, + and - to zoom), and hotspots you can reach with the Tab key.
 * **Works without JavaScript** – the first scene is a real image with its alternative text, followed by the scene names, so search engines and every visitor can see it.
 * **No external services** – every file is on your site. No API key, no CDN, no cookies, no tracking.
@@ -49,6 +52,7 @@ The plugin's source is in the src folder of the plugin, and builds with `npm ins
 2. In the block editor, add the **Virtual Tour** block.
 3. Choose or upload your 360° panorama images. Each image becomes a scene.
 4. Open a scene in the block's sidebar to name it, add its alternative text and set its starting view. While it is open, click the panorama in the block to add a hotspot there.
+5. Under **Viewer** and **Style**, choose autorotate, loading on click, the scene list and the colors.
 
 == Frequently Asked Questions ==
 
@@ -80,6 +84,10 @@ Yes. The block finds its own files even when an optimization plugin combines or 
 
 The plugin is a block for the block editor. You can build the tour in a reusable block (synced pattern) and show that pattern where your page builder allows block content.
 
+= The tour is far down a long page, or there are several tours. Can it load later? =
+
+Yes. Turn on **Load the tour on click** in the block's Viewer settings. Until a visitor presses "View in 360°" (or picks a scene in the list), the page loads only the first scene's picture.
+
 = Can visitors use the keyboard? =
 
 Yes. Press Tab to reach the panorama, use the arrow keys to look around and + or - to zoom. Hotspots and the scene names are buttons you can reach with Tab and press with Enter.
@@ -95,6 +103,16 @@ Yes. Press Tab to reach the panorama, use the arrow keys to look around and + or
 7. On a phone: drag with a finger and pinch to zoom.
 
 == Changelog ==
+
+= 1.1.0 =
+* New: Rotate on its own, with a speed. It stops when the visitor drags, clicks or uses a key, and stays off for visitors who ask their device for less motion.
+* New: Load the tour on click – a "View in 360°" button over the first picture, and nothing more loads until it is pressed.
+* New: the scene list can show small pictures of the scenes, or be hidden.
+* New: hotspot color and size, the color of the current scene and the button, and on/off for the zoom and fullscreen buttons.
+* New: on a tablet, tap the panorama in the editor to add a hotspot there, and drag a hotspot with a finger to move it.
+* Fix: images uploaded together, or dropped on the block together, become scenes in the order they were chosen.
+* Fix: the scene list in the sidebar no longer shows HTML tags from a scene name.
+* Fix: no "getMedia is deprecated" message in the browser console on WordPress 7.1.
 
 = 1.0.1 =
 * Fix: images chosen with the empty block's Media Library button now keep their title as the scene name and use the original upload, not the smaller "-scaled" copy WordPress makes of big images.

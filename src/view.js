@@ -1,6 +1,6 @@
 import './public-path';
 import { text } from './viewer/messages';
-import { cleanScenes, link } from './utils/scene';
+import { cleanScenes, cleanView, link, viewStyle } from './utils/scene';
 
 const SELECTOR = '.alvt_tour';
 
@@ -18,9 +18,9 @@ const configOf = ( el ) => {
 		const sizes = new Map( config.scenes.map( ( scene ) => [ scene?.id, scene ] ) );
 		const scenes = cleanScenes( config.scenes, !! config.editor ).map( ( scene ) => {
 			const raw = sizes.get( scene.id ) || {};
-			return { ...scene, small: link( raw.small ), width: Math.max( 0, Number( raw.width ) || 0 ) };
+			return { ...scene, small: link( raw.small ), thumb: link( raw.thumb ), width: Math.max( 0, Number( raw.width ) || 0 ) };
 		} );
-		return { ...config, scenes };
+		return { ...config, ...cleanView( config ), scenes };
 	} catch ( e ) {
 		return null;
 	}
@@ -53,6 +53,10 @@ const open = async ( el, config ) => {
 		if ( el.isConnected && ! el.alvt && el.querySelector( '.alvt_viewer' ) ) {
 			el.alvt = new Tour( el, configOf( el ) || config, text, measure() );
 			el.alvt.init();
+			// the load button had the focus: the viewer takes it
+			if ( el.alvtFocus ) {
+				el.querySelector( '.alvt_viewer' )?.focus();
+			}
 		}
 	} catch ( error ) {
 		// the first scene's picture stays
@@ -74,6 +78,30 @@ const noWebgl = ( el ) => {
 	}
 };
 
+// "Load the tour on click": the first scene's picture with a button; the viewer loads when it is pressed
+const start = ( el ) => {
+	el.alvtClicked = true;
+	const button = el.querySelector( '.alvt_load' );
+	if ( button ) {
+		el.alvtFocus = el.ownerDocument.activeElement === button;
+		button.remove();
+	}
+	// eslint-disable-next-line no-use-before-define
+	sync( el );
+};
+
+const loadButton = ( el ) => {
+	const stage = el.querySelector( '.alvt_stage' );
+	if ( stage && ! stage.querySelector( '.alvt_load' ) ) {
+		const button = document.createElement( 'button' );
+		button.type = 'button';
+		button.className = 'alvt_load';
+		button.textContent = text.load;
+		button.addEventListener( 'click', () => start( el ) );
+		stage.append( button );
+	}
+};
+
 // opens, updates or closes the viewer to match the block; the editor calls it again after every change
 const sync = ( el ) => {
 	const config = configOf( el );
@@ -90,6 +118,10 @@ const sync = ( el ) => {
 	}
 	if ( ! measure() ) {
 		noWebgl( el );
+		return;
+	}
+	if ( config.loadOnClick && ! config.editor && ! el.alvtClicked ) {
+		loadButton( el );
 		return;
 	}
 	open( el, config );
@@ -109,11 +141,73 @@ const whenNear = ( elements, callback ) => {
 	elements.forEach( ( el ) => observer.observe( el ) );
 };
 
+// the current scene in the list
+const mark = ( el, id ) => el.querySelectorAll( '.alvt_scenes .alvt_scene[data-id]' ).forEach( ( item ) => {
+	const on = item.dataset.id === id;
+	item.classList.toggle( 'is-current', on );
+	item.firstChild?.setAttribute?.( 'aria-current', on ? 'true' : 'false' );
+} );
+
+// The page's colors, and the scene names under the viewer (render.php) as buttons, with a small picture
+// for "thumbnails". A button opens its scene, and starts the viewer when it is not running yet.
+// The editor's block draws its own list (Edit.js).
+const page = ( el ) => {
+	const config = configOf( el );
+	if ( ! config || config.editor ) {
+		return;
+	}
+	Object.entries( viewStyle( config ) ).forEach( ( [ name, value ] ) => value && el.style.setProperty( name, value ) );
+	const list = el.querySelector( '.alvt_scenes' );
+	// without WebGL the names stay plain text
+	if ( ! list || list.hidden || ! measure() ) {
+		return;
+	}
+	const thumbs = 'thumbnails' === config.sceneList;
+	list.classList.toggle( 'alvt_thumbs', thumbs );
+	list.querySelectorAll( '.alvt_scene[data-id]' ).forEach( ( item ) => {
+		const scene = config.scenes.find( ( one ) => one.id === item.dataset.id );
+		if ( ! scene ) {
+			return;
+		}
+		const button = document.createElement( 'button' );
+		button.type = 'button';
+		button.className = 'alvt_pick';
+		if ( thumbs && scene.thumb ) {
+			const image = document.createElement( 'img' );
+			image.src = scene.thumb;
+			image.alt = '';
+			image.loading = 'lazy';
+			image.decoding = 'async';
+			button.append( image );
+		} else if ( thumbs ) {
+			const box = document.createElement( 'span' );
+			box.className = 'alvt_nopic';
+			button.append( box );
+		}
+		const name = document.createElement( 'span' );
+		name.textContent = item.textContent.trim();
+		button.append( name );
+		button.addEventListener( 'click', () => {
+			el.alvtShow = scene.id;
+			mark( el, scene.id );
+			if ( el.alvt ) {
+				el.alvt.show( scene.id );
+			} else {
+				start( el );
+			}
+		} );
+		item.replaceChildren( button );
+	} );
+	mark( el, config.scenes[ 0 ]?.id );
+	el.addEventListener( 'alvt:scene', ( event ) => mark( el, event.detail?.id ) );
+};
+
 // each element once, a later boot only picks up the new ones
 const boot = () => {
 	const all = [ ...document.querySelectorAll( SELECTOR ) ].filter( ( el ) => ! el.alvtSeen );
 	all.forEach( ( el ) => {
 		el.alvtSeen = true;
+		page( el );
 		// sent by the block editor's preview
 		el.addEventListener( 'alvt:update', () => sync( el ) );
 		el.addEventListener( 'alvt:destroy', () => close( el ) );
